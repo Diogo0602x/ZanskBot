@@ -3,7 +3,7 @@ import { Container, Typography, Box, Button } from '@mui/material';
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/public/bg-large.jpg)' }}>
+    <div className="flex flex-col min-h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/public/bg-2.jpg)' }}>
       <header className="flex-grow flex items-center justify-center text-white text-center">
         <Container>
           <Box className="backdrop-filter backdrop-blur-sm bg-black bg-opacity-40 p-8 rounded-lg">
