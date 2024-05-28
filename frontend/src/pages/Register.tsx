@@ -3,6 +3,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, MenuItem, Select, InputLabel, FormControl, FormHelperText, Container, Typography } from '@mui/material';
 import { formatCNPJ, formatPhone } from '../commons';
+import { registerUser } from '../services/api';
+import { User } from '../types/type';
 
 const Register: React.FC = () => {
   const validationSchema = Yup.object({
@@ -18,7 +20,7 @@ const Register: React.FC = () => {
       .required('Confirmação de senha é obrigatória'),
   });
 
-  const formik = useFormik({
+  const formik = useFormik<User>({
     initialValues: {
       cnpj: '',
       companyName: '',
@@ -30,9 +32,19 @@ const Register: React.FC = () => {
       confirmPassword: '',
     },
     validationSchema,
-    onSubmit: values => {
-      console.log(values);
-      // lógica para enviar os dados para o backend
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        await registerUser(values);
+        alert('Usuário registrado com sucesso');
+      } catch (error: unknown) {
+        if (typeof error === 'object' && error !== null && 'message' in error) {
+          setErrors({ email: (error as { message: string }).message });
+        } else {
+          setErrors({ email: 'Erro desconhecido ao registrar usuário' });
+        }
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 

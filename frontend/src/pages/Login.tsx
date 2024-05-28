@@ -3,6 +3,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { formatCNPJ } from '../commons';
+import { loginUser } from '../services/api';
+import { LoginData } from '../types/type';
 
 const Login: React.FC = () => {
   const validationSchema = Yup.object({
@@ -10,15 +12,26 @@ const Login: React.FC = () => {
     password: Yup.string().required('Senha é obrigatória'),
   });
 
-  const formik = useFormik({
+  const formik = useFormik<LoginData>({
     initialValues: {
       cnpj: '',
       password: '',
     },
     validationSchema,
-    onSubmit: values => {
-      console.log(values);
-      // lógica para enviar os dados para o backend
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const response = await loginUser(values);
+        alert('Login bem-sucedido');
+        console.log(response);
+      } catch (error: unknown) {
+        if (typeof error === 'object' && error !== null && 'message' in error) {
+          setErrors({ cnpj: (error as { message: string }).message });
+        } else {
+          setErrors({ cnpj: 'Erro desconhecido ao fazer login' });
+        }
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
