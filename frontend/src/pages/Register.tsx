@@ -49,8 +49,8 @@ const Register: React.FC = () => {
   });
 
   return (
-    <Container maxWidth="sm" className="mt-4">
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="sm" className="pt-20">
+      <Typography variant="h4" component="h1" gutterBottom textAlign="center">
         Cadastro de Empresa
       </Typography>
       <form onSubmit={formik.handleSubmit}>
