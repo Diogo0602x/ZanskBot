@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import { styled } from '@mui/system';
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import { StyledAppBarProps } from '../types/type';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -34,6 +34,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleScroll = () => {
     const offset = window.scrollY;
@@ -64,6 +65,19 @@ const Header: React.FC = () => {
     history.push('/');
   };
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDashboardClick = () => {
+    history.push('/dashboard');
+    handleMenuClose();
+  };
+
   const isLandingPage = location.pathname === '/';
 
   return (
@@ -82,9 +96,24 @@ const Header: React.FC = () => {
             </LoginButton>
           </>
         ) : (
-          <IconButton color="inherit" onClick={handleLogout}>
-            <PowerSettingsNewIcon />
-          </IconButton>
+          <>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleMenuOpen}
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleDashboardClick}>Menu</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </>
         )}
       </Toolbar>
     </StyledAppBar>
