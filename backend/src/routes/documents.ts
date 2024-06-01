@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
 import Document from '../models/Document';
 import { authMiddleware } from '../middleware/auth';
 
@@ -85,6 +86,33 @@ router.get('/download/:id', authMiddleware, async (req, res) => {
       res.status(500).json({ message: 'Erro ao fazer download do documento', error: error.message });
     } else {
       res.status(500).json({ message: 'Erro desconhecido ao fazer download do documento' });
+    }
+  }
+});
+
+router.delete('/delete/:id', authMiddleware, async (req, res) => {
+  try {
+    const document = await Document.findById(req.params.id);
+
+    if (!document) {
+      return res.status(404).json({ message: 'Documento não encontrado' });
+    }
+
+    const filePath = path.join(__dirname, '..', 'uploads', document.filename);
+    await Document.deleteOne({ _id: req.params.id });
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error('Erro ao deletar o arquivo:', err);
+      }
+    });
+
+    res.status(200).json({ message: 'Documento deletado com sucesso' });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: 'Erro ao deletar documento', error: error.message });
+    } else {
+      res.status(500).json({ message: 'Erro desconhecido ao deletar documento' });
     }
   }
 });

@@ -1,34 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, IconButton, List, ListItem, ListItemText, ListItemSecondaryAction, Box } from '@mui/material';
-import { Add as AddIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { uploadDocument, fetchDocuments, downloadDocument } from '../../services/api';
-import { Document } from "../../types/type";
+import { Typography, Button, IconButton, List, ListItem, Box } from '@mui/material';
+import { Add as AddIcon, Download as DownloadIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { uploadDocument, fetchDocuments, downloadDocument, deleteDocument } from '../../services/api';
+import { Document } from '../../types/type';
+import { formatFileSize, formatMimeType } from '../../commons';
 
 const Documents: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setSelectedFile(event.target.files[0]);
+      await handleUpload(event.target.files[0]);
     }
   };
 
-  const handleUpload = async () => {
-    if (selectedFile) {
-      try {
-        await uploadDocument(selectedFile);
-        loadDocuments();
-      } catch (error) {
-        console.error('Erro ao enviar documento:', error);
-      }
+  const handleUpload = async (file: File) => {
+    try {
+      await uploadDocument(file);
+      loadDocuments();
+    } catch (error) {
+      console.error('Erro ao enviar documento:', error);
     }
   };
 
   const loadDocuments = async () => {
     try {
       const response = await fetchDocuments();
-      if (response.data.documents) { 
+      if (response.data.documents) {
         setDocuments(response.data.documents);
       } else {
         console.error('Documentos não encontrados na resposta da API');
@@ -53,6 +51,15 @@ const Documents: React.FC = () => {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDocument(id);
+      loadDocuments();
+    } catch (error) {
+      console.error('Erro ao deletar documento:', error);
+    }
+  };
+
   useEffect(() => {
     loadDocuments();
   }, []);
@@ -71,27 +78,22 @@ const Documents: React.FC = () => {
         Anexar Documentos
         <input type="file" hidden onChange={handleFileChange} />
       </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleUpload}
-        disabled={!selectedFile}
-        style={{ marginLeft: '10px' }}
-      >
-        Upload
-      </Button>
       <List>
         {documents.map((doc) => (
-          <ListItem key={doc._id}>
-            <ListItemText
-              primary={`Nome: ${doc.originalName}`}
-              secondary={`Tipo Documento: ${doc.mimeType} | Tamanho: ${doc.size} bytes`}
-            />
-            <ListItemSecondaryAction>
+          <ListItem key={doc._id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <Typography variant="body1"><strong>Nome:</strong> {doc.originalName}</Typography>
+              <Typography variant="body2"><strong>Tipo Documento:</strong> {formatMimeType(doc.mimeType)}</Typography>
+              <Typography variant="body2"><strong>Tamanho:</strong> {formatFileSize(doc.size)} bytes</Typography>
+            </Box>
+            <Box>
               <IconButton edge="end" onClick={() => handleDownload(doc._id, doc.originalName)}>
                 <DownloadIcon />
               </IconButton>
-            </ListItemSecondaryAction>
+              <IconButton edge="end" onClick={() => handleDelete(doc._id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
           </ListItem>
         ))}
       </List>

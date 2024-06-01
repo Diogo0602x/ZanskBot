@@ -86,3 +86,21 @@ export const downloadDocument = async (id: string): Promise<AxiosResponse<Blob>>
     throw new Error('Erro desconhecido ao fazer download do documento');
   }
 };
+
+
+// Função para deletar documento
+export const deleteDocument = async (id: string): Promise<AxiosResponse<ApiResponse>> => {
+  try {
+    const response = await api.delete<ApiResponse>(`/documents/delete/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      },
+    });
+    return response;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data;
+    }
+    throw new Error('Erro desconhecido ao deletar documento');
+  }
+};
