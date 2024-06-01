@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button, IconButton, List, ListItem, Box } from '@mui/material';
 import { Add as AddIcon, Download as DownloadIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { uploadDocument, fetchDocuments, downloadDocument, deleteDocument } from '../../services/api';
+import { uploadDocument, fetchDocuments, downloadDocument, deleteDocument } from '../../services/document';
 import { Document } from '../../types/type';
 import { formatFileSize, formatMimeType } from '../../commons';
 

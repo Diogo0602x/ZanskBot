@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { formatCNPJ } from '../commons';
-import { loginUser } from '../services/api';
+import { loginUser } from '../services/login';
 import { LoginData } from '../types/type';
 import { useAuth } from '../contexts/AuthContext';
 

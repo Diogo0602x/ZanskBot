@@ -1,3 +1,9 @@
+import axios from "axios";
+
+export const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+});
+
 export const formatCNPJ = (value: string) => {
   const cnpj = value.replace(/\D/g, ''); // Remove non-numeric characters
   if (cnpj.length <= 14) {

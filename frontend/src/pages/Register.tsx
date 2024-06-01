@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, MenuItem, Select, InputLabel, FormControl, FormHelperText, Container, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { formatCNPJ, formatPhone } from '../commons';
-import { registerUser } from '../services/api';
+import { registerUser } from '../services/register';
 import { User } from '../types/type';
 
 const Register: React.FC = () => {
