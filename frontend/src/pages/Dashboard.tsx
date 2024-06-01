@@ -25,10 +25,10 @@ const Dashboard: React.FC = () => {
           <Tab label="API" />
         </Tabs>
         <Box flexGrow={1}>
-          {selectedTab === 0 && <Typography>Documentos Content</Typography>}
-          {selectedTab === 1 && <Typography>Perguntas Content</Typography>}
-          {selectedTab === 2 && <Typography>Chatbot Content</Typography>}
-          {selectedTab === 3 && <Typography>API Content</Typography>}
+          {selectedTab === 0 && <Typography>Documentos</Typography>}
+          {selectedTab === 1 && <Typography>Perguntas</Typography>}
+          {selectedTab === 2 && <Typography>Chatbot</Typography>}
+          {selectedTab === 3 && <Typography>API</Typography>}
         </Box>
       </Box>
     </Container>

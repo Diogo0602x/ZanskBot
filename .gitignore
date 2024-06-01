@@ -58,3 +58,8 @@ storybook-static/
 
 # Ignore arquivos de serviços (ex: Docker)
 docker-compose.override.yml
+
+# Outros arquivos e diretórios
+
+# Diretórios de upload
+backend/uploads/

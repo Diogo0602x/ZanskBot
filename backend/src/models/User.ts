@@ -1,14 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { IUser } from '../types/type';
 
-export interface IUser extends Document {
-  cnpj: string;
-  companyName: string;
-  companySocialName: string;
-  phone: string;
-  email: string;
-  companySize: string;
-  password: string;
-}
 
 const userSchema: Schema = new Schema({
   cnpj: { type: String, required: true, unique: true },

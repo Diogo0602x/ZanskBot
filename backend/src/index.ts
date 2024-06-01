@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth';
+import documentRoutes from './routes/documents';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/documents', documentRoutes);
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zanskbot', {
   useNewUrlParser: true,
