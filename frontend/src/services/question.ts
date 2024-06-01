@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import { api } from '../commons';
-import { ApiResponse, QuestionData } from '../types/type';
+import { ApiResponse, QuestionDataWithNumber } from '../types/type';
 
 const getAuthToken = () => localStorage.getItem('authToken');
 
 // Função para registrar perguntas
-export const registerQuestions = async (questions: QuestionData[]): Promise<AxiosResponse<ApiResponse>> => {
+export const registerQuestions = async (questions: QuestionDataWithNumber[]): Promise<AxiosResponse<ApiResponse>> => {
   try {
     const response = await api.post<ApiResponse>('/questions/register', { questions }, {
       headers: {
@@ -39,7 +39,7 @@ export const fetchQuestions = async (): Promise<AxiosResponse<ApiResponse>> => {
 };
 
 // Função para editar perguntas
-export const editQuestions = async (id: string, questions: QuestionData[]): Promise<AxiosResponse<ApiResponse>> => {
+export const editQuestions = async (id: string, questions: QuestionDataWithNumber[]): Promise<AxiosResponse<ApiResponse>> => {
   try {
     const response = await api.put<ApiResponse>(`/questions/edit/${id}`, { questions }, {
       headers: {

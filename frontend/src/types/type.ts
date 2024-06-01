@@ -25,7 +25,16 @@ export interface LoginData {
 }
 
 export interface QuestionData {
+  questionNumber: number;
   questionText: string;
+}
+
+export interface QuestionDataWithNumber extends QuestionData {
+  questionNumber: number;
+}
+
+export interface QuestionFormValues {
+  questions: QuestionData[];
 }
 
 export interface QuestionFormValues {
@@ -45,6 +54,10 @@ export interface ApiResponse {
     _id: string;
     questions: QuestionData[];
   }[];
+}
+
+export interface AskResponse {
+  answer: string;
 }
 
 export interface StyledAppBarProps {

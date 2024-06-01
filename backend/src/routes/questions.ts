@@ -20,7 +20,10 @@ router.post('/register', authMiddleware, async (req, res) => {
 
     const newQuestions = new Question({
       user: userId,
-      questions: questions.map((q: { questionText: string }) => ({ questionText: q.questionText })),
+      questions: questions.map((q: { questionNumber: number, questionText: string }) => ({
+        questionNumber: q.questionNumber,
+        questionText: q.questionText
+      })),
     });
 
     await newQuestions.save();
@@ -73,7 +76,10 @@ router.put('/edit/:id', authMiddleware, async (req, res) => {
 
     const updatedQuestions = await Question.findOneAndUpdate(
       { _id: questionId, user: userId },
-      { $set: { questions: questions.map((q: { questionText: string }) => ({ questionText: q.questionText })) } },
+      { $set: { questions: questions.map((q: { questionNumber: number, questionText: string }) => ({
+        questionNumber: q.questionNumber,
+        questionText: q.questionText
+      })) }},
       { new: true }
     );
 

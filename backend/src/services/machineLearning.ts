@@ -31,3 +31,24 @@ export const trainModel = (processedDocuments: string[][], questions: string[]):
   classifier.train();
   return classifier;
 };
+
+// Função para obter a melhor resposta com base na classificação
+export const getBestAnswer = (
+  classifier: natural.BayesClassifier,
+  question: string,
+  processedDocuments: string[][],
+  originalDocuments: string[]
+): string => {
+  // Classificar a pergunta
+  const label = classifier.classify(question);
+
+  // Encontrar o documento correspondente à etiqueta classificada
+  const docIndex = processedDocuments.findIndex(doc => doc.join(' ') === label);
+
+  // Retornar o documento original como resposta
+  if (docIndex !== -1) {
+    return originalDocuments[docIndex];
+  } else {
+    return 'Desculpe, não consegui encontrar uma resposta adequada nos documentos.';
+  }
+};

@@ -3,7 +3,7 @@ import { Container, TextField, Button, Box, Typography, Grid } from '@mui/materi
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { registerQuestions, fetchQuestions, editQuestions } from '../../services/question';
-import { QuestionData, QuestionFormValues } from '../../types/type';
+import { QuestionDataWithNumber, QuestionFormValues } from '../../types/type';
 
 const Questions: React.FC = () => {
   const [questionId, setQuestionId] = useState<string | null>(null);
@@ -11,20 +11,28 @@ const Questions: React.FC = () => {
 
   const validationSchema = Yup.object({
     questions: Yup.array()
-      .of(Yup.object({ questionText: Yup.string().required('Pergunta é obrigatória') }))
+      .of(Yup.object({
+        questionNumber: Yup.number().required('Número da pergunta é obrigatório'),
+        questionText: Yup.string().required('Pergunta é obrigatória')
+      }))
       .length(10, 'Deve haver exatamente 10 perguntas')
       .required('Perguntas são obrigatórias'),
   });
 
   const formik = useFormik<QuestionFormValues>({
-    initialValues: { questions: Array(10).fill({ questionText: '' }) },
+    initialValues: { questions: Array(10).fill({ questionNumber: 0, questionText: '' }) },
     validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
+        const questionsWithNumbers = values.questions.map((q, index) => ({
+          questionNumber: index + 1,
+          questionText: q.questionText,
+        }));
+
         if (questionId) {
-          await editQuestions(questionId, values.questions);
+          await editQuestions(questionId, questionsWithNumbers);
         } else {
-          const response = await registerQuestions(values.questions);
+          const response = await registerQuestions(questionsWithNumbers);
           if (response.status === 201 && response.data.newQuestions) {
             setQuestionId(response.data.newQuestions._id);
             loadQuestions(); // Recarregar perguntas após salvar com sucesso
@@ -72,7 +80,7 @@ const Questions: React.FC = () => {
       formik.touched.questions[index] &&
       formik.errors.questions[index]
     ) {
-      const error = formik.errors.questions[index] as FormikErrors<QuestionData>;
+      const error = formik.errors.questions[index] as FormikErrors<QuestionDataWithNumber>;
       return error.questionText;
     }
     return undefined;
