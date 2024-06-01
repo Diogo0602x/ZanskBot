@@ -7,18 +7,54 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Diretórios de dependências
+node_modules/
+frontend/node_modules/
+backend/node_modules/
 
-# Editor directories and files
-.vscode/*
+# Diretórios de build
+dist/
+dist-ssr/
+frontend/build/
+backend/dist/
+frontend/dist/
+
+# Arquivos de configuração local
+*.local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Configurações do Editor
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Outras ignorações específicas
+coverage/
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.backup
+*.sass-cache/
+*.husky/
+*.next/
+out/
+.next
+storybook-static/
+.storybook/
+
+# Ignore arquivos de serviços (ex: Docker)
+docker-compose.override.yml
