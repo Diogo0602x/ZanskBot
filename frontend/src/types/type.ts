@@ -9,6 +9,14 @@ export interface User {
   confirmPassword?: string;
 }
 
+export interface Document {
+  _id: string;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+}
+
 export interface LoginData {
   cnpj: string;
   password: string;
@@ -18,6 +26,7 @@ export interface ApiResponse {
   message: string;
   user?: User;
   token?: string;
+  documents?: Document[];
 }
 
 export interface StyledAppBarProps {
