@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, FormHelperText, Container, Typography } from '@mui/material';
+import { TextField, Button, MenuItem, Select, InputLabel, FormControl, FormHelperText, Container, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { formatCNPJ, formatPhone } from '../commons';
 import { registerUser } from '../services/api';
 import { User } from '../types/type';
 
 const Register: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const history = useHistory();
+
+  const handleClose = () => {
+    setOpen(false);
+    history.push('/login');
+  };
+
   const validationSchema = Yup.object({
     cnpj: Yup.string().required('CNPJ é obrigatório'),
     companyName: Yup.string().required('Nome da empresa é obrigatório'),
@@ -34,8 +43,12 @@ const Register: React.FC = () => {
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        await registerUser(values);
-        alert('Usuário registrado com sucesso');
+        const response = await registerUser(values);
+        if (response.status === 201) {
+          setOpen(true);
+        } else {
+          setErrors({ email: 'Erro ao registrar usuário' });
+        }
       } catch (error: unknown) {
         if (typeof error === 'object' && error !== null && 'message' in error) {
           setErrors({ email: (error as { message: string }).message });
@@ -54,7 +67,7 @@ const Register: React.FC = () => {
         Cadastro de Empresa
       </Typography>
       <form onSubmit={formik.handleSubmit}>
-      <TextField
+        <TextField
           fullWidth
           id="cnpj"
           name="cnpj"
@@ -178,6 +191,20 @@ const Register: React.FC = () => {
           </Button>
         </div>
       </form>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Usuário Registrado com Sucesso</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            O usuário foi registrado com sucesso. Clique no botão abaixo para fazer login.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Login
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

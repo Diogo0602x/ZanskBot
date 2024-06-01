@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import { styled } from '@mui/system';
-
-interface StyledAppBarProps {
-  scrolled: boolean;
-  isLandingPage: boolean;
-}
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import { StyledAppBarProps } from '../types/type';
+import { useAuth } from '../contexts/AuthContext';
 
 const StyledAppBar = styled(AppBar)<StyledAppBarProps>(({ scrolled, isLandingPage }) => ({
   backgroundColor: isLandingPage ? (scrolled ? '#000000' : 'transparent') : '#000000',
@@ -35,6 +33,7 @@ const Header: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
 
   const handleScroll = () => {
     const offset = window.scrollY;
@@ -56,6 +55,11 @@ const Header: React.FC = () => {
     history.push('/login');
   };
 
+  const handleLogout = () => {
+    logout();
+    history.push('/');
+  };
+
   const handleInitialPage = () => {
     history.push('/');
   };
@@ -65,18 +69,26 @@ const Header: React.FC = () => {
   return (
     <StyledAppBar position="fixed" scrolled={scrolled} isLandingPage={isLandingPage}>
       <Toolbar>
-        <StyledTypography variant="h6" onClick={handleInitialPage}>
+        <StyledTypography variant="h6" onClick={handleInitialPage} className="cursor-pointer">
           Zanskbot
         </StyledTypography>
-        <StyledButton color="inherit" onClick={handleRegisterClick}>
-          Registrar
-        </StyledButton>
-        <LoginButton variant="outlined" onClick={handleLoginClick}>
-          Login
-        </LoginButton>
+        {!isAuthenticated ? (
+          <>
+            <StyledButton color="inherit" onClick={handleRegisterClick}>
+              Registrar
+            </StyledButton>
+            <LoginButton variant="outlined" onClick={handleLoginClick}>
+              Login
+            </LoginButton>
+          </>
+        ) : (
+          <IconButton color="inherit" onClick={handleLogout}>
+            <PowerSettingsNewIcon />
+          </IconButton>
+        )}
       </Toolbar>
     </StyledAppBar>
   );
-}
+};
 
 export default Header;

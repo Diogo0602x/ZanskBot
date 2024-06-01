@@ -1,8 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import User, { IUser } from '../models/User';
+import jwt from 'jsonwebtoken';
+import User from '../models/User';
 
 const router = express.Router();
+const JWT_SECRET = 'your_secret_key';
 
 // Endpoint para registrar um novo usuário
 router.post('/register', async (req, res) => {
@@ -73,7 +75,10 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Senha incorreta' });
     }
 
-    res.status(200).json({ message: 'Login bem-sucedido', user });
+    // Gerar um token JWT
+    const token = jwt.sign({ id: user._id, cnpj: user.cnpj }, JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(200).json({ message: 'Login bem-sucedido', token });
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('Erro ao autenticar usuário:', error.message);

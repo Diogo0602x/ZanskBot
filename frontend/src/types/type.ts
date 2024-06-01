@@ -17,4 +17,17 @@ export interface LoginData {
 export interface ApiResponse {
   message: string;
   user?: User;
+  token?: string;
+}
+
+export interface StyledAppBarProps {
+  scrolled: boolean;
+  isLandingPage: boolean;
+}
+
+
+export interface AuthContextProps {
+  isAuthenticated: boolean;
+  login: (token: string) => void;
+  logout: () => void;
 }

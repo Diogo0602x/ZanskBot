@@ -1,12 +1,17 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { formatCNPJ } from '../commons';
 import { loginUser } from '../services/api';
 import { LoginData } from '../types/type';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login: React.FC = () => {
+  const history = useHistory();
+  const { login } = useAuth();
+
   const validationSchema = Yup.object({
     cnpj: Yup.string().required('CNPJ é obrigatório'),
     password: Yup.string().required('Senha é obrigatória'),
@@ -21,8 +26,12 @@ const Login: React.FC = () => {
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
         const response = await loginUser(values);
-        alert('Login bem-sucedido');
-        console.log(response);
+        if (response.status === 200 && response.data.token) {
+          login(response.data.token); // Atualizar o estado de autenticação
+          history.push('/dashboard');
+        } else {
+          setErrors({ cnpj: 'Dados incorretos' });
+        }
       } catch (error: unknown) {
         if (typeof error === 'object' && error !== null && 'message' in error) {
           setErrors({ cnpj: (error as { message: string }).message });
