@@ -5,6 +5,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/auth';
 import documentRoutes from './routes/documents';
+import questionsRouter from './routes/questions';
 import { authMiddleware } from './middleware/auth';
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/documents',authMiddleware,  documentRoutes);
+app.use('/api/questions', authMiddleware, questionsRouter); 
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zanskbot', {
   useNewUrlParser: true,

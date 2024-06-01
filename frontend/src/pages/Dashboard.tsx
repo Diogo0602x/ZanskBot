@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Typography, Tabs, Tab, Box } from '@mui/material';
 import Documents from './tabs/Documents';
+import Questions from './tabs/Questions';
 
 const Dashboard: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -28,7 +29,7 @@ const Dashboard: React.FC = () => {
         </Tabs>
         <Box flexGrow={1}>
           {selectedTab === 0 && <Documents />}
-          {selectedTab === 1 && <Typography>Perguntas</Typography>}
+          {selectedTab === 1 && <Questions key={selectedTab} />}
           {selectedTab === 2 && <Typography>Chatbot</Typography>}
           {selectedTab === 3 && <Typography>API</Typography>}
         </Box>

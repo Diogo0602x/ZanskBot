@@ -1,3 +1,5 @@
+
+
 export interface User {
   cnpj: string;
   companyName: string;
@@ -22,11 +24,27 @@ export interface LoginData {
   password: string;
 }
 
+export interface QuestionData {
+  questionText: string;
+}
+
+export interface QuestionFormValues {
+  questions: QuestionData[];
+}
+
 export interface ApiResponse {
   message: string;
   user?: User;
   token?: string;
   documents?: Document[];
+  newQuestions?: {
+    _id: string;
+    questions: QuestionData[];
+  };
+  questions?: {
+    _id: string;
+    questions: QuestionData[];
+  }[];
 }
 
 export interface StyledAppBarProps {
