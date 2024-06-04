@@ -48,15 +48,11 @@ router.post('/ask', authMiddleware, async (req, res) => {
       console.log(`Python script error output: ${stderr}`);
 
       try {
-        if (stdout) {
-          const result = JSON.parse(stdout);
-          if (result.error) {
-            return res.status(400).json({ message: result.error });
-          }
-          return res.status(200).json({ answer: result.answer });
-        } else {
-          return res.status(500).json({ message: 'Empty response from Python script' });
+        const result = JSON.parse(stdout);
+        if (result.error) {
+          return res.status(400).json({ message: result.error });
         }
+        res.status(200).json({ answer: result.answer });
       } catch (parseError) {
         console.error(`JSON parse error: ${parseError}`);
         const errorMessage = parseError instanceof Error ? parseError.message : 'Erro desconhecido';
