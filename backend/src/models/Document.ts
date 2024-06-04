@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document as MongooseDocument } from 'mongoose';
 import { IDocument } from '../types/type';
 
-
 const DocumentSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   filename: { type: String, required: true },

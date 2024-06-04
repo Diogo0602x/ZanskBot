@@ -32,11 +32,13 @@ export interface AuthRequest extends Request {
 }
 
 export interface IQuestion {
+  questionNumber: number;
+  questionText: string;
+}
+
+export interface IUserQuestion extends Document {
   user: mongoose.Schema.Types.ObjectId;
-  questions: {
-    questionNumber: number;
-    questionText: string;
-  }[];
+  questions: IQuestion[];
 }
 
 export interface IQuestionDocument extends IQuestion, MongooseDocument {}
