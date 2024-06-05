@@ -19,7 +19,7 @@ const App: React.FC = () => {
               <Route path="/" exact component={LandingPage} />
               <Route path="/register" component={Register} />
               <Route path="/login" component={Login} />
-              <Route path="/dashboard" component={Dashboard} /> {/* Adicione esta linha para o Dashboard */}
+              <Route path="/dashboard" component={Dashboard} />
             </Switch>
           </main>
           <Footer />

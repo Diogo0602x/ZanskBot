@@ -27,7 +27,7 @@ const Login: React.FC = () => {
       try {
         const response = await loginUser(values);
         if (response.status === 200 && response.data.token) {
-          login(response.data.token); // Atualizar o estado de autenticação
+          login(response.data.token);
           history.push('/dashboard');
         } else {
           setErrors({ cnpj: 'Dados incorretos' });
