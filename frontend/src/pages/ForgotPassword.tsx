@@ -1,42 +1,37 @@
-import React from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Container, Typography } from '@mui/material';
+import { requestPasswordReset } from '../services/login';
 import { formatCNPJ } from '../commons';
-import { loginUser } from '../services/login';
-import { LoginData } from '../types/type';
-import { useAuth } from '../contexts/AuthContext';
+import { useHistory } from 'react-router-dom';
 
-const Login: React.FC = () => {
+const ForgotPassword: React.FC = () => {
+  const [message, setMessage] = useState('');
   const history = useHistory();
-  const { login } = useAuth();
 
   const validationSchema = Yup.object({
     cnpj: Yup.string().required('CNPJ é obrigatório'),
-    password: Yup.string().required('Senha é obrigatória'),
+    email: Yup.string().email('Email inválido').required('Email é obrigatório'),
   });
 
-  const formik = useFormik<LoginData>({
+  const formik = useFormik({
     initialValues: {
       cnpj: '',
-      password: '',
+      email: '',
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const response = await loginUser(values);
-        if (response.status === 200 && response.data.token) {
-          login(response.data.token);
-          history.push('/dashboard');
-        } else {
-          setErrors({ cnpj: 'Dados incorretos' });
-        }
+        const response = await requestPasswordReset(values.cnpj, values.email);
+        setMessage(response.data.message);
+        // Redirect to ResetPassword with the token
+        history.push(`/reset-password/${response.data.token}`);
       } catch (error: unknown) {
         if (typeof error === 'object' && error !== null && 'message' in error) {
-          setErrors({ cnpj: (error as { message: string }).message });
+          setErrors({ email: (error as { message: string }).message });
         } else {
-          setErrors({ cnpj: 'Erro desconhecido ao fazer login' });
+          setErrors({ email: 'Erro ao solicitar recuperação de senha' });
         }
       } finally {
         setSubmitting(false);
@@ -47,7 +42,7 @@ const Login: React.FC = () => {
   return (
     <Container maxWidth="xs" className="pt-20">
       <Typography variant="h4" component="h1" gutterBottom textAlign="center">
-        Login
+        Recuperar Senha
       </Typography>
       <form onSubmit={formik.handleSubmit}>
         <TextField
@@ -61,33 +56,28 @@ const Login: React.FC = () => {
           error={formik.touched.cnpj && Boolean(formik.errors.cnpj)}
           helperText={formik.touched.cnpj && formik.errors.cnpj}
           margin="normal"
-          inputProps={{ maxLength: 18 }}
         />
-
         <TextField
           fullWidth
-          id="password"
-          name="password"
-          label="Senha"
-          type="password"
-          value={formik.values.password}
+          id="email"
+          name="email"
+          label="Email"
+          type="email"
+          value={formik.values.email}
           onChange={formik.handleChange}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
           margin="normal"
         />
-
-        <div className="text-center mt-2">
-          <Link to="/forgot-password">Esqueceu sua senha?</Link>
-          <Button color="primary" variant="contained" type="submit" style={{marginLeft: "10px"}}>
-            Entrar
+        <div className="text-center mt-4">
+          <Button color="primary" variant="contained" type="submit">
+            Enviar
           </Button>
         </div>
-
-
       </form>
+      {message && <Typography className="text-center mt-4">{message}</Typography>}
     </Container>
   );
 };
 
-export default Login;
+export default ForgotPassword;

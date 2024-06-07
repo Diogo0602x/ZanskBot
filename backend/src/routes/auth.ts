@@ -1,4 +1,5 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -6,19 +7,8 @@ import User from '../models/User';
 import nodemailer from 'nodemailer';
 
 const router = express.Router();
+dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key';
-const EMAIL_SERVICE = process.env.EMAIL_SERVICE || 'default_service';
-const EMAIL_USER = process.env.EMAIL_USER || 'default_user';
-const EMAIL_PASS = process.env.EMAIL_PASS || 'default_pass';
-
-const transporter = nodemailer.createTransport({
-  service: EMAIL_SERVICE,
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
-  },
-});
-
 
 // Endpoint para registrar um novo usuário
 router.post('/register', async (req, res) => {
@@ -107,12 +97,12 @@ router.post('/login', async (req, res) => {
 // Endpoint to request a password reset
 router.post('/forgot-password', async (req, res) => {
   try {
-    const { email } = req.body;
+    const { cnpj, email } = req.body;
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by CNPJ and email
+    const user = await User.findOne({ cnpj, email });
     if (!user) {
-      return res.status(400).json({ message: 'Email not found' });
+      return res.status(409).json({ message: 'E-mail e cnpj não coincidem com nenhum usuário cadastrado' });
     }
 
     // Generate reset token
@@ -125,27 +115,15 @@ router.post('/forgot-password', async (req, res) => {
     // Save the updated user
     await user.save();
 
-    // Send email with reset link
-    const mailOptions = {
-      to: user.email,
-      from: EMAIL_USER,
-      subject: 'Password Reset',
-      text: `You are receiving this because you (or someone else) have requested to reset your password. 
-        Please click on the following link, or paste it into your browser to complete the process:
-        http://${req.headers.host}/reset-password/${token}
-        If you did not request this, please ignore this email and your password will remain unchanged.`
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: 'Password reset email sent' });
+    // Respond with success message and token
+    res.status(200).json({ message: 'Usuário encontrado, redirecionando para redefinição de senha', token });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error('Error on password reset request:', error.message);
-      res.status(500).json({ message: 'Error on password reset request', error: error.message });
+      console.error('Erro ao solicitar recuperação de senha:', error.message);
+      res.status(500).json({ message: 'Erro ao solicitar recuperação de senha', error: error.message });
     } else {
-      console.error('Unknown error on password reset request:', error);
-      res.status(500).json({ message: 'Unknown error on password reset request' });
+      console.error('Erro desconhecido ao solicitar recuperação de senha:', error);
+      res.status(500).json({ message: 'Erro desconhecido ao solicitar recuperação de senha' });
     }
   }
 });
