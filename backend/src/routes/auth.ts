@@ -6,10 +6,10 @@ import User from '../models/User';
 import nodemailer from 'nodemailer';
 
 const router = express.Router();
-const JWT_SECRET = 'your_secret_key';
-const EMAIL_SERVICE = 'your_email_service';
-const EMAIL_USER = 'your_email_user';
-const EMAIL_PASS = 'your_email_password';
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key';
+const EMAIL_SERVICE = process.env.EMAIL_SERVICE || 'default_service';
+const EMAIL_USER = process.env.EMAIL_USER || 'default_user';
+const EMAIL_PASS = process.env.EMAIL_PASS || 'default_pass';
 
 const transporter = nodemailer.createTransport({
   service: EMAIL_SERVICE,
