@@ -2,7 +2,6 @@ import mongoose, { Document as MongooseDocument } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 
 export interface IUser extends Document {
-  id?: string;
   cnpj: string;
   companyName: string;
   companySocialName: string;
@@ -10,8 +9,9 @@ export interface IUser extends Document {
   email: string;
   companySize: string;
   password: string;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date | number;
 }
-
 
 declare module 'express-serve-static-core' {
   interface Request {

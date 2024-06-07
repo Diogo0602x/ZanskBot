@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IUser } from '../types/type';
 
-
 const userSchema: Schema = new Schema({
   cnpj: { type: String, required: true, unique: true },
   companyName: { type: String, required: true },
@@ -10,6 +9,8 @@ const userSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   companySize: { type: String, required: true },
   password: { type: String, required: true },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
 });
 
 const User = mongoose.model<IUser>('User', userSchema);
