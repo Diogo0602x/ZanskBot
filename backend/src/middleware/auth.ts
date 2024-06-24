@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 import { AuthRequest } from '../types/type';
 
-
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
 
@@ -12,7 +11,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
   }
 
   try {
-    const decoded: any = jwt.verify(token, 'your_secret_key');
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'default_secret_key');
     const user = await User.findById(decoded.id);
 
     if (!user) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, TextField, Button, Box, Typography, Grid } from '@mui/material';
+import { Container, TextField, Button, Box, Typography, Grid, Card, CardContent } from '@mui/material';
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { registerQuestions, fetchQuestions, editQuestions } from '../../services/question';
@@ -96,32 +96,39 @@ const Questions: React.FC = () => {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h4" component="h1" gutterBottom>
-        Perguntas
-      </Typography>
-      <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={2}>
-          {formik.values.questions.map((question, index) => (
-            <Grid item xs={12} key={index}>
-              <TextField
-                fullWidth
-                id={`questions.${index}.questionText`}
-                name={`questions.${index}.questionText`}
-                label={`Pergunta ${index + 1}`}
-                value={question.questionText}
-                onChange={formik.handleChange}
-                error={getTouched(index) && Boolean(getError(index))}
-                helperText={getTouched(index) && getError(index)}
-              />
+      <Card>
+        <CardContent>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Perguntas
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Nesta tela, você pode cadastrar até 10 perguntas que o chatbot deverá responder. Preencha as perguntas nos campos abaixo e clique em "Salvar".
+          </Typography>
+          <form onSubmit={formik.handleSubmit}>
+            <Grid container spacing={2}>
+              {formik.values.questions.map((question, index) => (
+                <Grid item xs={12} key={index}>
+                  <TextField
+                    fullWidth
+                    id={`questions.${index}.questionText`}
+                    name={`questions.${index}.questionText`}
+                    label={`Pergunta ${index + 1}`}
+                    value={question.questionText}
+                    onChange={formik.handleChange}
+                    error={getTouched(index) && Boolean(getError(index))}
+                    helperText={getTouched(index) && getError(index)}
+                  />
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-        <Box display="flex" justifyContent="flex-end" m={2}>
-          <Button color="primary" variant="contained" type="submit">
-            Salvar
-          </Button>
-        </Box>
-      </form>
+            <Box display="flex" justifyContent="flex-end" m={2}>
+              <Button color="primary" variant="contained" type="submit">
+                Salvar
+              </Button>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
     </Container>
   );
 };

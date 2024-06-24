@@ -54,6 +54,7 @@ export interface ApiResponse {
     _id: string;
     questions: QuestionData[];
   }[];
+  apiKey?: string;
 }
 
 export interface AskResponse {

@@ -5,8 +5,9 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/auth';
 import documentRoutes from './routes/documents';
-import questionsRoutes from './routes/questions'
-import chatbotRoutes from './routes/chatbot';;
+import questionsRoutes from './routes/questions';
+import chatbotRoutes from './routes/chatbot';
+import apiRoutes from './routes/api';
 import { authMiddleware } from './middleware/auth';
 
 dotenv.config();
@@ -20,14 +21,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
-app.use('/api/documents',authMiddleware,  documentRoutes);
-app.use('/api/questions', authMiddleware, questionsRoutes); 
+app.use('/api/documents', authMiddleware, documentRoutes);
+app.use('/api/questions', authMiddleware, questionsRoutes);
 app.use('/api/chatbot', authMiddleware, chatbotRoutes);
+app.use('/api', authMiddleware, apiRoutes);
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zanskbot', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-} as mongoose.ConnectOptions)
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zanskbot')
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {

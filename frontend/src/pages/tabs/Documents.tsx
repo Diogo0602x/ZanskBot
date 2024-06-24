@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, IconButton, List, ListItem, Box } from '@mui/material';
+import { Typography, Button, IconButton, List, Box, Card, CardContent, CardActions } from '@mui/material';
 import { Add as AddIcon, Download as DownloadIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { uploadDocument, fetchDocuments, downloadDocument, deleteDocument } from '../../services/document';
 import { Document } from '../../types/type';
@@ -65,36 +65,44 @@ const Documents: React.FC = () => {
   }, []);
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
-        Documentos
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<AddIcon />}
-        component="label"
-      >
-        Anexar Documentos
-        <input type="file" hidden onChange={handleFileChange} />
-      </Button>
-      <List>
+    <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4 }}>
+      <Card>
+        <CardContent>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Documentos
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Nesta tela, você pode anexar, visualizar e gerenciar seus documentos. Utilize o botão abaixo para anexar novos documentos.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            component="label"
+            sx={{ mt: 2 }}
+          >
+            Anexar Documentos
+            <input type="file" hidden onChange={handleFileChange} />
+          </Button>
+        </CardContent>
+      </Card>
+      <List sx={{ mt: 4 }}>
         {documents.map((doc) => (
-          <ListItem key={doc._id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <Card key={doc._id} sx={{ mb: 2 }}>
+            <CardContent>
               <Typography variant="body1"><strong>Nome:</strong> {doc.originalName}</Typography>
               <Typography variant="body2"><strong>Tipo Documento:</strong> {formatMimeType(doc.mimeType)}</Typography>
               <Typography variant="body2"><strong>Tamanho:</strong> {formatFileSize(doc.size)} bytes</Typography>
-            </Box>
-            <Box>
+            </CardContent>
+            <CardActions>
               <IconButton edge="end" onClick={() => handleDownload(doc._id, doc.originalName)}>
                 <DownloadIcon />
               </IconButton>
               <IconButton edge="end" onClick={() => handleDelete(doc._id)}>
                 <DeleteIcon />
               </IconButton>
-            </Box>
-          </ListItem>
+            </CardActions>
+          </Card>
         ))}
       </List>
     </Box>

@@ -7,7 +7,7 @@ import { StyledAppBarProps } from '../types/type';
 import { useAuth } from '../contexts/AuthContext';
 
 const StyledAppBar = styled(AppBar)<StyledAppBarProps>(({ scrolled, isLandingPage }) => ({
-  backgroundColor: isLandingPage ? (scrolled ? '#000000' : 'transparent') : '#000000',
+  backgroundColor: isLandingPage ? (scrolled ? '#1F2937' : 'transparent') : '#1F2937',
   transition: 'background-color 0.3s ease-in-out',
 }));
 

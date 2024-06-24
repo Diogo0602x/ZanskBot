@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, TextField, Button, Box, Typography, List, ListItem, ListItemText, Avatar } from '@mui/material';
+import { Container, TextField, Button, Box, Typography, List, ListItem, ListItemText, Avatar, Card, CardContent } from '@mui/material';
 import { askQuestion } from '../../services/chatbot'; 
 import RobotIcon from '@mui/icons-material/SmartToy';
 import { fetchQuestions } from '../../services/question';
@@ -15,7 +15,7 @@ const Chatbot: React.FC = () => {
       if (response.data.questions && response.data.questions.length > 0) {
         const formattedQuestions = response.data.questions[0].questions.map((q, index) => `${index + 1} - ${q.questionText}`);
         setQuestions(formattedQuestions);
-        setMessages([{ question: '', answer: 'Hello, this is ZanskBot. Please choose one number of the following questions:\n' + formattedQuestions.join('\n') }]);
+        setMessages([{ question: '', answer: 'Olá, este é o ZanskBot. Por favor, escolha um número das seguintes perguntas:\n' + formattedQuestions.join('\n') }]);
       }
     } catch (error) {
       console.error('Erro ao buscar perguntas:', error);
@@ -45,40 +45,47 @@ const Chatbot: React.FC = () => {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h4" component="h1" gutterBottom>
-        Chatbot
-      </Typography>
-      <List>
-        {messages.map((message, index) => (
-          <ListItem key={index} alignItems="flex-start">
-            <Avatar>
-              <RobotIcon />
-            </Avatar>
-            <ListItemText
-              primary={message.question ? `Você: ${message.question}` : ''}
-              secondary={`Zanskbot: ${message.answer}`}
-              style={{ whiteSpace: 'pre-wrap', marginLeft: '10px'}}
+      <Card>
+        <CardContent>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Chatbot
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Nesta tela, você pode interagir com o ZanskBot. Digite o número da pergunta que deseja fazer e clique em "Enviar".
+          </Typography>
+          <List>
+            {messages.map((message, index) => (
+              <ListItem key={index} alignItems="flex-start">
+                <Avatar>
+                  <RobotIcon />
+                </Avatar>
+                <ListItemText
+                  primary={message.question ? `Você: ${message.question}` : ''}
+                  secondary={`Zanskbot: ${message.answer}`}
+                  style={{ whiteSpace: 'pre-wrap', marginLeft: '10px'}}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <Box display="flex" mt={2}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Digite o número da pergunta"
+              value={currentQuestion}
+              onChange={(e) => setCurrentQuestion(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleAsk();
+                }
+              }}
             />
-          </ListItem>
-        ))}
-      </List>
-      <Box display="flex" mt={2}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          label="Digite o número da pergunta"
-          value={currentQuestion}
-          onChange={(e) => setCurrentQuestion(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleAsk();
-            }
-          }}
-        />
-        <Button color="primary" variant="contained" onClick={handleAsk} style={{ marginLeft: '10px' }}>
-          Enviar
-        </Button>
-      </Box>
+            <Button color="primary" variant="contained" onClick={handleAsk} style={{ marginLeft: '10px' }}>
+              Enviar
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
     </Container>
   );
 };
